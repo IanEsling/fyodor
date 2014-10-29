@@ -117,6 +117,10 @@ public class RDG {
         return new StringGenerator(max);
     }
 
+    public static Generator<String> string() {
+        return new StringGenerator(30);
+    }
+
     public static Generator<String> string(Integer max, String charset) {
         return new StringGenerator(max, charset);
     }
