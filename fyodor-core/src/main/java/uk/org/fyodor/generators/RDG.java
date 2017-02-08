@@ -8,10 +8,14 @@ import uk.org.fyodor.generators.collections.ArrayGenerator;
 import uk.org.fyodor.generators.collections.ListGenerator;
 import uk.org.fyodor.generators.collections.MapGenerator;
 import uk.org.fyodor.generators.collections.SetGenerator;
+import uk.org.fyodor.generators.time.*;
 import uk.org.fyodor.range.Range;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 import static java.lang.String.format;
@@ -38,6 +42,48 @@ public class RDG {
     private static final CurrencyGenerator CURRENCY_GENERATOR = new CurrencyGenerator();
     private static final LocaleGenerator LOCALE_GENERATOR = new LocaleGenerator();
     private static final Iso3CountryGenerator ISO_3_COUNTRY_GENERATOR = new Iso3CountryGenerator();
+
+    public static Generator<Instant> instant() {
+        return instant(InstantRange.all());
+    }
+
+    public static Generator<Instant> instant(final InstantRange range) {
+        return instant((Range<Instant>) range);
+    }
+
+    public static Generator<Instant> instant(final Range<Instant> range) {
+        ensure(isNotNull(range), "instant range cannot be null");
+
+        return new InstantGenerator(sourceOfRandomness(), range);
+    }
+
+    public static Generator<LocalTime> localTime() {
+        return localTime(LocalTimeRange.all());
+    }
+
+    public static Generator<LocalTime> localTime(final LocalTimeRange range) {
+        return localTime((Range<LocalTime>) range);
+    }
+
+    public static Generator<LocalTime> localTime(final Range<LocalTime> range) {
+        ensure(isNotNull(range), "time range cannot be null");
+
+        return new LocalTimeGenerator(sourceOfRandomness(), range);
+    }
+
+    public static Generator<LocalDate> localDate() {
+        return localDate(LocalDateRange.all());
+    }
+
+    public static Generator<LocalDate> localDate(final LocalDateRange range) {
+        return localDate((Range<LocalDate>) range);
+    }
+
+    public static Generator<LocalDate> localDate(final Range<LocalDate> range) {
+        ensure(isNotNull(range), "date range cannot be null");
+
+        return new LocalDateGenerator(sourceOfRandomness(), range);
+    }
 
     public static Generator<Boolean> bool() {
         return BOOLEAN_GENERATOR;
@@ -66,7 +112,7 @@ public class RDG {
     public static Generator<Long> longVal(final long maximum) {
         ensure(isNotNegative(maximum), "maximum cannot be negative");
 
-        return longVal(closed(0l, maximum));
+        return longVal(closed(0L, maximum));
     }
 
     public static Generator<Long> longVal(final Range<Long> range) {
@@ -102,15 +148,15 @@ public class RDG {
     }
 
     public static Generator<BigDecimal> bigDecimal(final double val) {
-        return bigDecimal(Range.closed(BigDecimal.ZERO, BigDecimal.valueOf(val)));
+        return bigDecimal(closed(BigDecimal.ZERO, BigDecimal.valueOf(val)));
     }
 
     public static Generator<BigDecimal> bigDecimal(final long val) {
-        return bigDecimal(Range.closed(BigDecimal.ZERO, BigDecimal.valueOf(val)));
+        return bigDecimal(closed(BigDecimal.ZERO, BigDecimal.valueOf(val)));
     }
 
     public static Generator<BigDecimal> bigDecimal(final BigDecimal val) {
-        return bigDecimal(Range.closed(BigDecimal.ZERO, val));
+        return bigDecimal(closed(BigDecimal.ZERO, val));
     }
 
     public static Generator<BigDecimal> bigDecimal(final Range<BigDecimal> range) {
@@ -355,4 +401,5 @@ public class RDG {
     public static Generator<String> iso3Country() {
         return ISO_3_COUNTRY_GENERATOR;
     }
+
 }
